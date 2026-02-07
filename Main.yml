@@ -1,0 +1,30 @@
+name: intraday-engine
+
+on:
+  schedule:
+    - cron: "39 3 * * 1-5"  # 09:09 IST (03:39 UTC) Mon-Fri
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install pandas requests
+
+      - name: Run engine
+        run: python engine.py
+        env:
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
